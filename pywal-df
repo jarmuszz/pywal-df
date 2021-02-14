@@ -1,0 +1,36 @@
+#!/bin/sh
+# POSIX complaint :)
+# This file is under Public Domain
+
+# Output file
+OUT=      # EDIT THIS
+
+
+COLORSFILE=~/.cache/wal/colors-df
+
+# Checkinkg if output file is set
+if [ -z "$OUT" ] 
+  cat <<EOF >&2 
+Edit "OUT" variable in "$0" before using this script." 
+EOF
+  exit 1
+fi
+
+# Checkinkg if file colors-df exist
+if [ ! -f "$COLORSFILE" ]; then
+  cat <<EOF >&2
+File "${COLORSFILE}" does not exist. 
+Place the "colors-df" template file in "~/.config/wal/templates/" and rerun pywal.
+EOF
+  exit 1
+fi
+
+# Main logic
+sed '/^#/d; /^\s.*$/d' $COLORSFILE | while read -r line; do
+  line="$(echo $line | sed 's/[ \t]+/ /g')"
+  name="$(echo $line | cut -d' ' -f 1)"
+  value="$(echo $line | cut -d' ' -f 2)"
+  printf "[%s_R:%d]\n" "$name" "0x$(echo $value | cut -c 2-3)"
+  printf "[%s_G:%d]\n" "$name" "0x$(echo $value | cut -c 4-5)"
+  printf "[%s_B:%d]\n" "$name" "0x$(echo $value | cut -c 6-7)"
+done >$OUT
