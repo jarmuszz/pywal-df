@@ -26,7 +26,7 @@ EOF
 fi
 
 # Main logic
-sed '/^#/d; /^\s.*$/d' $COLORSFILE | while read -r line; do
+sed '/^#/d; /^\s*$/d' $COLORSFILE | while read -r line; do
   line="$(echo $line | sed 's/[ \t]+/ /g')"
   name="$(echo $line | cut -d' ' -f 1)"
   value="$(echo $line | cut -d' ' -f 2)"
